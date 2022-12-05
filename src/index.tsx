@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, Platform, requireNativeComponent, View } from 'react-native';
 
 const LINKING_ERROR =
   `The package 'react-native-zippra-scanner' doesn't seem to be linked. Make sure: \n\n` +
@@ -9,14 +9,23 @@ const LINKING_ERROR =
 const ZippraScanner = NativeModules.ZippraScanner
   ? NativeModules.ZippraScanner
   : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+    {},
+    {
+      get() {
+        throw new Error(LINKING_ERROR);
+      },
+    }
+  );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return ZippraScanner.multiply(a, b);
+export function generatePairingBarcode(): Promise<any> {
+  return ZippraScanner.openBarcodeActivity();
 }
+
+const BarCodeView = requireNativeComponent<any>('BarCodeView', {
+  name: 'BarCodeView',
+  propTypes: {
+    ...View.propTypes,
+  },
+});
+
+export { BarCodeView }
