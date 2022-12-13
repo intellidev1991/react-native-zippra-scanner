@@ -1,63 +1,50 @@
 package com.reactnativezipprascanner;
 
+import com.reactnativezipprascanner.application.Application;
+import com.reactnativezipprascanner.helpers.Constants;
+import com.reactnativezipprascanner.helpers.ScannerAppEngine;
+import com.zebra.scannercontrol.DCSScannerInfo;
+import com.zebra.scannercontrol.FirmwareUpdateEvent;
+import com.zebra.scannercontrol.IDcsSdkApiDelegate;
+
 import android.Manifest;
-import android.app.Dialog;
+import android.app.AlertDialog;
+import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.Window;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.facebook.react.ReactActivity;
 import com.zebra.scannercontrol.BarCodeView;
 import com.zebra.scannercontrol.DCSSDKDefs;
-import com.zebra.scannercontrol.SDKHandler;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import android.app.Activity;
 
 
-//import com.reactnativezipprascanner.BarCodeView;
-//import com.reactnativezipprascanner.DCSSDKDefs;
-//import com.reactnativezipprascanner.DCSScannerInfo;
-//import com.reactnativezipprascanner.SDKHandler;
+import java.util.List;
 
-/*import com.reactnativezipprascanner.application.Application;
-import com.reactnativezipprascanner.helpers.Constants;*/
+import static com.reactnativezipprascanner.application.Application.virtualTetherEventOccurred;
+import static com.reactnativezipprascanner.application.Application.virtualTetherHostActivated;
 
-
-public class BarcodeActivity extends ReactActivity {
+public class BarcodeActivity extends BaseActivity implements ScannerAppEngine.IScannerAppEngineDevConnectionsDelegate {
   private FrameLayout llBarcode;
-  //  private NavigationView navigationView;
-  Menu menu;
-  MenuItem pairNewScannerMenu;
   private static final int ACCESS_FINE_LOCATION_REQUEST_CODE = 10;
-  private static final int MAX_ALPHANUMERIC_CHARACTERS = 12;
-  private static final int MAX_BLUETOOTH_ADDRESS_CHARACTERS = 17;
-  private static final String DEFAULT_EMPTY_STRING = "";
-  private static final String COLON_CHARACTER = ":";
-  public static final String BLUETOOTH_ADDRESS_VALIDATOR = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
-  static boolean firstRun = true;
-  Dialog dialog;
-  Dialog dialogBTAddress;
-  static String btAddress;
-  static String userEnteredBluetoothAddress;
-
-//  private GoogleApiClient googleApiClient;
-//  DCSSDKDefs.DCSSDK_BT_PROTOCOL selectedProtocol;
-//  DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG selectedConfig;
-
-  protected static final int REQUEST_CHECK_SETTINGS = 0x1;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -65,57 +52,105 @@ public class BarcodeActivity extends ReactActivity {
     setContentView(R.layout.activity_barcode);
 
     initialize();
-  }
 
-  private void initialize() {
     if (ContextCompat.checkSelfPermission(this,
-      Manifest.permission.ACCESS_FINE_LOCATION)
+      Manifest.permission.BLUETOOTH_CONNECT)
       != PackageManager.PERMISSION_GRANTED) {
       // No explanation needed, we can request the permission.
       ActivityCompat.requestPermissions(this,
-        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+        new String[]{Manifest.permission.BLUETOOTH_CONNECT},
         ACCESS_FINE_LOCATION_REQUEST_CODE);
-    } else {
-      initializeDcsSdk();
+    }else{
+//      initialize();
     }
-//    llBarcode = (FrameLayout) findViewById(R.id.scan_to_connect_barcode);
-//    setTitle("Pair New Scanner");
-//    broadcastSCAisListening();
+    final Button button = (Button) findViewById(R.id.button3);
+    button.setOnClickListener(new Button.OnClickListener() {
+      public void onClick(View v) {
+        // your handler code here
+        Activity activity = ZippraScannerModule.MainContext.getCurrentActivity();
+        Intent intent = new Intent(activity, ActiveSanner.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ZippraScannerModule.MainContext.startActivity(intent);
+      }
+    });
+  }
+
+ void openActiveScanner() {
+   Activity activity = ZippraScannerModule.MainContext.getCurrentActivity();
+   Intent intent = new Intent(activity, ActiveSanner.class);
+   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+   ZippraScannerModule.MainContext.startActivity(intent);
   }
 
 
+  @Override
+  public void onRequestPermissionsResult(int requestCode,
+                                         @NonNull String permissions[], @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    switch (requestCode) {
+      case ACCESS_FINE_LOCATION_REQUEST_CODE: {
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0
+          && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          // permission was granted, yay!
+          initialize();
+
+        } else {
+//          finish();
+          // permission denied, boo! Disable the
+          // functionality that depends on this permission.
+        }
+        return;
+      }
+    }
+  }
+
+  private void initialize() {
+    initializeDcsSdk();
+  }
+
+
+
   private void initializeDcsSdk() {
-    ZippraScannerModule.sdkHandler.dcssdkEnableAvailableScannersDetection(true);
-//    ZippraScannerModule.sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_BT_NORMAL);
-    ZippraScannerModule.sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_SNAPI);
-    ZippraScannerModule.sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_BT_LE);
-    ZippraScannerModule.sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_USB_CDC);
+    if (Application.sdkHandler != null){
+      Application.sdkHandler.dcssdkEnableAvailableScannersDetection(true);
+      Application.sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_BT_NORMAL);
+      Application.sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_SNAPI);
+      Application.sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_BT_LE);
+      Application.sdkHandler.dcssdkSetOperationalMode(DCSSDKDefs.DCSSDK_MODE.DCSSDK_OPMODE_USB_CDC);
 
-    llBarcode = (FrameLayout) findViewById(R.id.scan_to_connect_barcode);
+      llBarcode = (FrameLayout) findViewById(R.id.scan_to_connect_barcode);
 
-    generatePairingBarcode();
+      generatePairingBarcode();
+    }
   }
 
 
   private void generatePairingBarcode() {
+
     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-1, -1);
-    BarCodeView barCodeView = ZippraScannerModule.sdkHandler.dcssdkGetPairingBarcode(DCSSDKDefs.DCSSDK_BT_PROTOCOL.SSI_BT_LE, DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG.SET_FACTORY_DEFAULTS);
-    if(barCodeView!=null) {
-      updateBarcodeView(layoutParams, barCodeView);
-    }else{
+    BarCodeView barCodeView = Application.sdkHandler.dcssdkGetPairingBarcode(DCSSDKDefs.DCSSDK_BT_PROTOCOL.SSI_BT_CRADLE_HOST, DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG.SET_FACTORY_DEFAULTS);
+//    if(barCodeView!=null) {
+//      updateBarcodeView(layoutParams, barCodeView);
+//    }else{
+      Log.i("Log:", "IN");
       // SDK was not able to determine Bluetooth MAC. So call the dcssdkGetPairingBarcode with BT Address.
 
 //      btAddress= getDeviceBTAddress(settings);
 //      if(btAddress.equals("")){
 //        llBarcode.removeAllViews();
 //      }else {
-      ZippraScannerModule.sdkHandler.dcssdkSetBTAddress(btAddress);
-        barCodeView = ZippraScannerModule.sdkHandler.dcssdkGetPairingBarcode(DCSSDKDefs.DCSSDK_BT_PROTOCOL.SSI_BT_LE, DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG.SET_FACTORY_DEFAULTS, btAddress);
-        if (barCodeView != null) {
-          updateBarcodeView(layoutParams, barCodeView);
-        }
+    String btAddress = "A4:C7:4B:3B:38:F5";
+
+//    showMessageBox(btAddress);
+
+    Application.sdkHandler.dcssdkSetBTAddress(btAddress);
+        barCodeView = Application.sdkHandler.dcssdkGetPairingBarcode(DCSSDKDefs.DCSSDK_BT_PROTOCOL.SSI_BT_CRADLE_HOST, DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG.SET_FACTORY_DEFAULTS, btAddress);
+          if (barCodeView != null) {
+            updateBarcodeView(layoutParams, barCodeView);
+          }
 //      }
-    }
+//    }
   }
 
 
@@ -166,62 +201,44 @@ public class BarcodeActivity extends ReactActivity {
   }
 
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-//
-//    SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
-////    TextView txtBarcodeType = (TextView)findViewById(R.id.scan_to_connect_barcode_type);
-////    TextView txtScannerConfiguration = (TextView)findViewById(R.id.scan_to_connect_scanner_config);
-//    String sourceString = "";
-////    txtBarcodeType.setText(Html.fromHtml(sourceString));
-////    txtScannerConfiguration.setText("");
-//    boolean dntShowMessage = settings.getBoolean(Constants.PREF_DONT_SHOW_INSTRUCTIONS, false);
-//    int barcode = settings.getInt(Constants.PREF_PAIRING_BARCODE_TYPE, 0);
-//    boolean setDefaults = settings.getBoolean(Constants.PREF_PAIRING_BARCODE_CONFIG, true);
-//    int protocolInt = settings.getInt(Constants.PREF_COMMUNICATION_PROTOCOL_TYPE, 0);
-//    String strProtocol = "SSI over Bluetooth LE";
-//    llBarcode = (FrameLayout) findViewById(R.id.scan_to_connect_barcode);
-//    DCSSDKDefs.DCSSDK_BT_PROTOCOL protocol = DCSSDKDefs.DCSSDK_BT_PROTOCOL.LEGACY_B;
-//    DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG config = DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG.KEEP_CURRENT;
-//    if(barcode ==0){
-//      sourceString = "STC Barcode ";
-//      switch (protocolInt){
-//        case 0:
-//          protocol = DCSSDKDefs.DCSSDK_BT_PROTOCOL.SSI_BT_LE;//SSI over Bluetooth LE
-//          strProtocol = "Bluetooth LE";
-//          break;
-//        case 1:
-//          protocol = DCSSDKDefs.DCSSDK_BT_PROTOCOL.SSI_BT_CRADLE_HOST;//SSI over Classic Bluetooth
-//          strProtocol = "SSI over Classic Bluetooth";
-//          break;
-//        default:
-//          protocol = DCSSDKDefs.DCSSDK_BT_PROTOCOL.SSI_BT_LE;//SSI over Bluetooth LE
-//          break;
-//      }
-//      if(setDefaults){
-//        config = DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG.SET_FACTORY_DEFAULTS;
-//      }else{
-//      }
-//    }else{
-//      sourceString = "Legacy Pairing ";
-//    }
-//    selectedProtocol = protocol;
-//    selectedConfig = config;
-//    generatePairingBarcode();
-//    if(dialogBTAddress == null && firstRun && !dntShowMessage){
-//    }
-//
-//
-//    if ((barcode == 0 )
-//      && (setDefaults == true)
-//      && (protocolInt == 0)) {
-//    } else {
-//      if(barcode ==0){
-//      }else{
-//      }
-//
-//    }
+  public void showMessageBox(String message) {
+    AlertDialog alertDialog = new AlertDialog.Builder(this)
+      .setTitle("Success")
+      .setMessage(message)
+      .show();
+  }
 
+  public void resetVirtualTetherHostConfigurations() {
+    if (!virtualTetherEventOccurred || !virtualTetherHostActivated) {
+      SharedPreferences.Editor settingsEditor = getSharedPreferences(Constants.PREFS_NAME, 0).edit();
+      settingsEditor.putBoolean(Constants.PREF_VIRTUAL_TETHER_HOST_FEEDBACK, false).apply();
+      settingsEditor.putBoolean(Constants.PREF_VIRTUAL_TETHER_HOST_VIBRATION_ALARM, false).apply();
+      settingsEditor.putBoolean(Constants.PREF_VIRTUAL_TETHER_HOST_AUDIO_ALARM, false).apply();
+      settingsEditor.putBoolean(Constants.PREF_VIRTUAL_TETHER_HOST_SCREEN_FLASH, false).apply();
+      settingsEditor.putBoolean(Constants.PREF_VIRTUAL_TETHER_HOST_POPUP_MESSAGE, false).apply();
+      settingsEditor.putBoolean(Constants.PREF_VIRTUAL_TETHER_SCANNER_SETTINGS, false).apply();
+    }
+  }
+
+
+  @Override
+  public boolean scannerHasAppeared(int scannerID) {
+    return false;
+  }
+
+  @Override
+  public boolean scannerHasDisappeared(int scannerID) {
+    return false;
+  }
+
+  @Override
+  public boolean scannerHasConnected(int scannerID) {
+    showMessageBox("scannerHasConnected : " + String.valueOf(scannerID));
+    return true;
+  }
+
+  @Override
+  public boolean scannerHasDisconnected(int scannerID) {
+    return false;
   }
 }
