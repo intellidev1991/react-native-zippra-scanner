@@ -1,1 +1,7 @@
-<resources></resources>
+<resources>
+
+  <string name="perm_desc_service_launch_permission">Permission to launch Scanner Control Application Virtual Tether service from other application/components</string>
+  <string name="perm_label_service_launch_permission">Service launch permission</string>
+  <string name="perm_desc_activity_launch_permission">Permission to launch Scanner Control Application from other application/components</string>
+  <string name="perm_label_activity_launch_permission">Activity launch permission</string>
+</resources>

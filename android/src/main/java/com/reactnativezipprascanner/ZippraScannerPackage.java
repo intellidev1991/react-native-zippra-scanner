@@ -29,7 +29,6 @@ public class ZippraScannerPackage implements ReactPackage {
     @NonNull
     @Override
     public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
-      return Arrays.<ViewManager>asList(
-        new BarCodeCustomView(reactContext));
+      return Arrays.<ViewManager>asList();
     }
 }

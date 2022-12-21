@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Interface to be implemented by classes which wish to communicate with the SDK
  */
-public interface ScannerAppEngine{
+public interface ScannerAppEngine {
     /**
      * Interface to notify about the change in scanner list due to (apperance/disappearance) of scanners
      */

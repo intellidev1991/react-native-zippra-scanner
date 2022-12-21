@@ -1,28 +1,43 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text, Image } from 'react-native';
-import {  BarCodeView, generatePairingBarcode} from 'react-native-zippra-scanner';
+import { StyleSheet, View, Button, DeviceEventEmitter } from 'react-native';
+import { generatePairingBarcode, requestAccess, setupApi, getActiveScannersList} from 'react-native-zippra-scanner';
 
 export default function App() {
-  const [ViewToShow, setResult] = React.useState<number | undefined>(null);
 
   React.useEffect(() => {
     setTimeout(() => {
-      generatePairingBarcode();
+    
+    requestAccess().then((response) => {
+      alert(response);
+      setupApi();
+    }).catch((error) => {
+      alert(error);
+    })
+    }, 1000);
 
-    }, 2000);
+    DeviceEventEmitter.addListener('Test', () => alert('SCANNER_APPEARED'));
+    DeviceEventEmitter.addListener('SCANNER_DIsAPPEARED', () => alert('SCANNER_DIsAPPEARED'));
+    DeviceEventEmitter.addListener('SCANNER_ESTABLISHED', () => alert('SCANNER_ESTABLISHED'));
+    DeviceEventEmitter.addListener('SESSION_TERMINATED', () => alert('SESSION_TERMINATED'));
+    DeviceEventEmitter.addListener('BARCODE_RECEIVED', (value) => alert(value));
+
   }, [])
+
+  const getDevices = () => {
+    getActiveScannersList().then((devices) => {
+
+      alert(JSON.stringify((devices)))
+      
+    })
+  }
 
   return (
     <View style={styles.container}>
       {/* <Text>Result: {result}</Text> */}
-
-      <BarCodeView 
-        style={{
-          backgroundColor: 'blue',
-          height: 100,
-          width: 100
-        }} />
+      <Button style={styles.openButton} onPress={generatePairingBarcode} title={'Open Barcode'} />
+      <Button style={styles.openButton} onPress={getDevices} title={'Get Devices'} />
+      {/* <Pressable style={styles.openButton} onPress={generatePairingBarcode} /> */}
     </View>
   );
 }
@@ -31,12 +46,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'red'
+    justifyContent: 'space-around',
   },
-  box: {
-    width: 60,
+  openButton: {
+    width: 120,
     height: 60,
-    marginVertical: 20,
+    backgroundColor: "#000000",
+    // marginBottom: 20
   },
 });

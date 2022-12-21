@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.reactnativezipprascanner">
+  xmlns:tools="http://schemas.android.com/tools"
+  package="com.reactnativezipprascanner">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -13,21 +14,61 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
+    <permission android:name="com.reactnativezipprascanner.SERVICE_LAUNCH_PERMISSION"
+        android:description="@string/perm_desc_service_launch_permission"
+        android:label="@string/perm_label_service_launch_permission"
+        android:protectionLevel="normal" />
+
+    <permission android:name="com.reactnativezipprascanner.ACTIVITY_LAUNCH_PERMISSION"
+      android:description="@string/perm_desc_activity_launch_permission"
+      android:label="@string/perm_label_activity_launch_permission"
+      android:protectionLevel="normal" />
+
+
     <application>
-        <activity
-            android:name=".ActiveSanner"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".BarcodeActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+
+<!--      <activity-->
+<!--          android:name=".BarcodeActivity"-->
+<!--          android:configChanges="orientation|screenSize"-->
+<!--          android:launchMode="singleTask"-->
+<!--          android:permission="com.reactnativezipprascanner.ACTIVITY_LAUNCH_PERMISSION">-->
+<!--          <intent-filter>-->
+<!--            <action android:name="activities.ActiveScannerActivity" />-->
+
+<!--            <category android:name="android.intent.category.DEFAULT" />-->
+<!--          </intent-filter>-->
+<!--        </activity>-->
+
+      <activity
+        android:name=".FindCabledScanner"
+        android:configChanges="orientation|screenSize"
+        android:launchMode="singleTask"
+        android:noHistory="true"
+        android:permission="com.zebra.scannercontrol.ACTIVITY_LAUNCH_PERMISSION">
+        <intent-filter>
+          <action android:name="activities.ActiveScannerActivity" />
+
+          <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+      </activity>
+
+        <receiver
+        android:name=".receivers.NotificationsReceiver"
+        android:enabled="true"
+        android:exported="false">
+        <intent-filter>
+
+          <!-- Actions to be handled should be registered here -->
+          <action android:name="com.zebra.scannercontrol.connected" />
+          <action android:name="com.zebra.scannercontrol.disconnected" />
+          <action android:name="com.zebra.scannercontrol.available" />
+          <action android:name="com.zebra.scannercontrol.conn.failed" />
+          <action android:name="com.zebra.scannercontrol.barcode.received" />
+          <action android:name="com.zebra.scannercontrol.image.received" />
+          <action android:name="com.zebra.scannercontrol.video.received" />
+        </intent-filter>
+      </receiver>
+
     </application>
 
 </manifest>

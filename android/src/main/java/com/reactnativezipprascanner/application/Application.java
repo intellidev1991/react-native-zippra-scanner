@@ -3,11 +3,11 @@ package com.reactnativezipprascanner.application;
 import android.net.Uri;
 import android.os.Handler;
 
-import com.zebra.scannercontrol.DCSScannerInfo;
-import com.zebra.scannercontrol.SDKHandler;
 import com.reactnativezipprascanner.helpers.Barcode;
 import com.reactnativezipprascanner.helpers.Foreground;
 import com.reactnativezipprascanner.helpers.ScannerAppEngine;
+import com.zebra.scannercontrol.DCSScannerInfo;
+import com.zebra.scannercontrol.SDKHandler;
 
 import java.io.File;
 import java.util.ArrayList;
