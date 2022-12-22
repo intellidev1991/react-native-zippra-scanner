@@ -19,14 +19,7 @@
         android:id="@+id/scan_to_connect_barcode"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" >
-
-      <Button
-        android:id="@+id/button3"
-        android:layout_width="match_parent"
-        android:layout_height="161dp"
-        android:text="Test" />
-    </FrameLayout>
+        android:layout_gravity="center" />
   </LinearLayout>
 
 </LinearLayout>

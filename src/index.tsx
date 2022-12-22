@@ -17,8 +17,12 @@ const ZippraScanner = NativeModules.ZippraScanner
     }
   );
 
-export function generatePairingBarcode(): Promise<any> {
-  return ZippraScanner.openBarcodeActivity();
+export function findCabledScanner() {
+  return ZippraScanner.findCabledScanner();
+}
+
+export function findBluetoothScanner() {
+  return ZippraScanner.findBluetoothScanner();
 }
 
 

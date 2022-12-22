@@ -51,10 +51,19 @@ public class ZippraScannerModule extends ReactContextBaseJavaModule {
 
 
   @ReactMethod
-  public void openBarcodeActivity() {
+  public void findCabledScanner() {
     Activity activity = getCurrentActivity();
     if (activity != null) {
       Intent intent = new Intent(activity, FindCabledScanner.class);
+      activity.startActivity(intent);
+    }
+  }
+
+  @ReactMethod
+  public void findBluetoothScanner() {
+    Activity activity = getCurrentActivity();
+    if (activity != null) {
+      Intent intent = new Intent(activity, FindBluetoothScanner.class);
       activity.startActivity(intent);
     }
   }
@@ -106,7 +115,6 @@ public class ZippraScannerModule extends ReactContextBaseJavaModule {
     filter.addAction(Constants.ACTION_SCANNER_AVAILABLE);
     filter.addAction(Constants.ACTION_SCANNER_CONN_FAILED);
 
-//        Use a positive priority
     filter.setPriority(2);
 
     MainContext.registerReceiver(onNotification, filter);
@@ -131,7 +139,5 @@ public class ZippraScannerModule extends ReactContextBaseJavaModule {
       abortBroadcast();
     }
   };
-
-
 
 }

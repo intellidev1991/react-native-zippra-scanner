@@ -27,17 +27,18 @@
 
     <application>
 
-<!--      <activity-->
-<!--          android:name=".BarcodeActivity"-->
-<!--          android:configChanges="orientation|screenSize"-->
-<!--          android:launchMode="singleTask"-->
-<!--          android:permission="com.reactnativezipprascanner.ACTIVITY_LAUNCH_PERMISSION">-->
-<!--          <intent-filter>-->
-<!--            <action android:name="activities.ActiveScannerActivity" />-->
+      <activity
+          android:name=".FindBluetoothScanner"
+          android:configChanges="orientation|screenSize"
+          android:launchMode="singleTask"
+          android:noHistory="true"
+          android:permission="com.reactnativezipprascanner.ACTIVITY_LAUNCH_PERMISSION">
+          <intent-filter>
+            <action android:name="activities.ActiveScannerActivity" />
 
-<!--            <category android:name="android.intent.category.DEFAULT" />-->
-<!--          </intent-filter>-->
-<!--        </activity>-->
+            <category android:name="android.intent.category.DEFAULT" />
+          </intent-filter>
+        </activity>
 
       <activity
         android:name=".FindCabledScanner"

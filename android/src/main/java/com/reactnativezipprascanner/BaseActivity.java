@@ -182,6 +182,7 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
   public void showMessageBox(String message) {
     Toast.makeText(this,
       message, Toast.LENGTH_LONG).show();
+
   }
 
   @Override
@@ -785,13 +786,10 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
 
           break;
         case Constants.SESSION_ESTABLISHED:
-          sendEvent("SCANNER_ESTABLISHED", "SDSDSDSDSD");
-
           DCSScannerInfo activeScanner = (DCSScannerInfo) msg.obj;
           notificaton_processed = false;
           result = false;
           setAutoReconnectOption(activeScanner.getScannerID(), true);
-          sendEvent("SCANNER_ESTABLISHED", "SDSDSDSDSD");
           /* notify connections delegates */
           if (mDevConnDelegates != null) {
             for (IScannerAppEngineDevConnectionsDelegate delegate : mDevConnDelegates) {
@@ -871,6 +869,8 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
               Toast.makeText(getApplicationContext(), notification_Msg.toString(), Toast.LENGTH_SHORT).show();
             }
           }
+
+          finish();
 
           break;
         case Constants.SESSION_TERMINATED:
