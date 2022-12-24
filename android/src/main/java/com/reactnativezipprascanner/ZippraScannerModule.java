@@ -60,10 +60,11 @@ public class ZippraScannerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void findBluetoothScanner() {
+  public void findBluetoothScanner(String bluetoothAddress) {
     Activity activity = getCurrentActivity();
     if (activity != null) {
       Intent intent = new Intent(activity, FindBluetoothScanner.class);
+      intent.putExtra("BluetoothAddress", bluetoothAddress);
       activity.startActivity(intent);
     }
   }

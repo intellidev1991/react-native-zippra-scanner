@@ -1,16 +1,29 @@
 package com.reactnativezipprascanner;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.reactnativezipprascanner.application.Application;
+import com.reactnativezipprascanner.helpers.Constants;
 import com.reactnativezipprascanner.helpers.ScannerAppEngine;
 import com.zebra.scannercontrol.BarCodeView;
 import com.zebra.scannercontrol.DCSSDKDefs;
@@ -21,7 +34,14 @@ import java.util.ArrayList;
 public class FindBluetoothScanner extends BaseActivity implements ScannerAppEngine.IScannerAppEngineDevConnectionsDelegate {
   private FrameLayout llBarcode;
   private static ArrayList<DCSScannerInfo> mSNAPIList=new ArrayList<DCSScannerInfo>();
-  static String btAddress = "A4:C7:4B:3B:38:F5";
+  static String btAddress = "";
+  Dialog dialogBTAddress;
+  static String userEnteredBluetoothAddress;
+  private static final int MAX_BLUETOOTH_ADDRESS_CHARACTERS = 17;
+  public static final String BLUETOOTH_ADDRESS_VALIDATOR = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
+  private static final String DEFAULT_EMPTY_STRING = "";
+  private static final String COLON_CHARACTER = ":";
+  private static final int MAX_ALPHANUMERIC_CHARACTERS = 12;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -30,31 +50,33 @@ public class FindBluetoothScanner extends BaseActivity implements ScannerAppEngi
 
     llBarcode = (FrameLayout) findViewById(R.id.scan_to_connect_barcode);
 
+    Intent intent = getIntent();
+    btAddress = intent.getStringExtra("BluetoothAddress");
+    showMessageBox(btAddress);
     generatePairingBarcode();
   }
 
 
   private void generatePairingBarcode() {
+    SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
+
     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-1, -1);
     BarCodeView barCodeView = Application.sdkHandler.dcssdkGetPairingBarcode(DCSSDKDefs.DCSSDK_BT_PROTOCOL.SSI_BT_CRADLE_HOST, DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG.SET_FACTORY_DEFAULTS);
     if(barCodeView!=null) {
       updateBarcodeView(layoutParams, barCodeView);
     }else{
       // SDK was not able to determine Bluetooth MAC. So call the dcssdkGetPairingBarcode with BT Address.
-
-//      btAddress= getDeviceBTAddress(settings);
-//      if(btAddress.equals("")){
-//        llBarcode.removeAllViews();
-//      }else {
       Application.sdkHandler.dcssdkSetBTAddress(btAddress);
       barCodeView = Application.sdkHandler.dcssdkGetPairingBarcode(DCSSDKDefs.DCSSDK_BT_PROTOCOL.SSI_BT_CRADLE_HOST, DCSSDKDefs.DCSSDK_BT_SCANNER_CONFIG.SET_FACTORY_DEFAULTS, btAddress);
       if (barCodeView != null) {
         updateBarcodeView(layoutParams, barCodeView);
       }
-//      }
     }
   }
 
+  public boolean isValidBTAddress(String text) {
+    return text != null && text.length() > 0 && text.matches(BLUETOOTH_ADDRESS_VALIDATOR);
+  }
 
   private void updateBarcodeView(LinearLayout.LayoutParams layoutParams, BarCodeView barCodeView) {
     Display display = getWindowManager().getDefaultDisplay();

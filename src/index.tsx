@@ -21,8 +21,8 @@ export function findCabledScanner() {
   return ZippraScanner.findCabledScanner();
 }
 
-export function findBluetoothScanner() {
-  return ZippraScanner.findBluetoothScanner();
+export function findBluetoothScanner(BluetoothAddress: String) {
+  return ZippraScanner.findBluetoothScanner(BluetoothAddress);
 }
 
 

@@ -9,10 +9,10 @@ export default function App() {
     setTimeout(() => {
 
       requestAccess().then((response) => {
-        alert(response);
+        // alert(response);
         setupApi();
       }).catch((error) => {
-        alert(error);
+        // alert(error);
       })
     }, 1000);
 
@@ -35,7 +35,9 @@ export default function App() {
   return (
     <View style={styles.container}>
       {/* <Text>Result: {result}</Text> */}
-      <Button style={styles.openButton} onPress={findBluetoothScanner} title={'Open bluetooth barcode'} />
+      <Button style={styles.openButton} onPress={() => {
+        findBluetoothScanner("A4:C7:4B:3B:38:F5");
+      }} title={'Open bluetooth barcode'} />
       <Button style={styles.openButton} onPress={findCabledScanner} title={'Open usb barcode'} />
       <Button style={styles.openButton} onPress={getDevices} title={'Get Devices'} />
       {/* <Pressable style={styles.openButton} onPress={generatePairingBarcode} /> */}
