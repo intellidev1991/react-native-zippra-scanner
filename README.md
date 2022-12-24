@@ -5,11 +5,11 @@ Zebra scanner for react native ("https://www.zebra.com/us/en/support-downloads/s
 ```sh
 npm install react-native-zippra-scanner
 
-Download sdk folder: https://drive.google.com/file/d/1NUedeRy3AKSOgmNNjm9lkzEotno8AOzR/view
+Download sdk folder: ("https://drive.google.com/file/d/1NUedeRy3AKSOgmNNjm9lkzEotno8AOzR/view")
 
 Extract the file then add it => {Your Project}/android/BarcodeScannerLibrary
 
-Add this 
+Add this to {Your Project/android/app/build.gradle}
 dependencies {
     // all modules
     +implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
@@ -20,7 +20,6 @@ Add this inside settings.gradle
 include ':BarcodeScannerLibrary'
 
 
-{Your Project/android/app/build.gradle}
 ```
 
 ## Usage
