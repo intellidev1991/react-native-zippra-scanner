@@ -57,6 +57,7 @@ const App = () => {
     }
 
     const connectBluethoothButtonPressed = () => {
+        // .. change this with bluetooth address of you mobile
         const bluetoothAddressOfYoutMobile = "A4:C7:4B:3B:38:F5";
         findBluetoothScanner(bluetoothAddressOfYoutMobile);
     }
