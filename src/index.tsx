@@ -26,7 +26,7 @@ export function findBluetoothScanner(BluetoothAddress: String) {
 }
 
 
-export function requestAccess(): Promise<any> {
+export function requestBluethoothAccess(): Promise<any> {
   return ZippraScanner.requestAccess();
 }
 
@@ -38,4 +38,4 @@ export function setupApi(): Promise<any> {
 
 export function getActiveScannersList(): Promise<any> {
   return ZippraScanner.getActiveScannersList();
-}
+} 
