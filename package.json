@@ -1,6 +1,6 @@
 {
-  "name": "react-native-zippra-scanner",
-  "version": "0.1.0",
+  "name": "react-native-zepra-scanner",
+  "version": "0.0.2",
   "description": "test",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -40,7 +40,10 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/MahmoudElmoghazy/react-native-zippra-scanner",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MahmoudElmoghazy/react-native-zippra-scanner.git"
+  },
   "author": "Mahmoud El-moghazy <mahmoudahmedmoghazy@gmail.com> (https://github.com/MahmoudElmoghazy)",
   "license": "MIT",
   "bugs": {
@@ -150,5 +153,8 @@
         }
       ]
     ]
+  },
+  "directories": {
+    "example": "example"
   }
 }
