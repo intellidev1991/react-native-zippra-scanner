@@ -1,4 +1,4 @@
-import { NativeModules, Platform} from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 
 const LINKING_ERROR =
   `The package 'react-native-zippra-scanner' doesn't seem to be linked. Make sure: \n\n` +
@@ -9,13 +9,20 @@ const LINKING_ERROR =
 const ZippraScanner = NativeModules.ZippraScanner
   ? NativeModules.ZippraScanner
   : new Proxy(
-    {},
-    {
-      get() {
-        throw new Error(LINKING_ERROR);
-      },
-    }
-  );
+      {},
+      {
+        get() {
+          throw new Error(LINKING_ERROR);
+        },
+      }
+    );
+
+export enum Listeners {
+  BARCODE_RECEIVED = 'BARCODE_RECEIVED',
+  SESSION_TERMINATED = 'SESSION_TERMINATED',
+  SCANNER_DISAPPEARED = 'SCANNER_DISAPPEARED',
+  SCANNER_ESTABLISHED = 'SCANNER_ESTABLISHED',
+}
 
 export function findCabledScanner() {
   return ZippraScanner.findCabledScanner();
@@ -25,17 +32,14 @@ export function findBluetoothScanner(BluetoothAddress: String) {
   return ZippraScanner.findBluetoothScanner(BluetoothAddress);
 }
 
-
 export function requestBluethoothAccess(): Promise<any> {
   return ZippraScanner.requestAccess();
 }
-
 
 export function setupApi(): Promise<any> {
   return ZippraScanner.setupApi();
 }
 
-
 export function getActiveScannersList(): Promise<any> {
   return ZippraScanner.getActiveScannersList();
-} 
+}

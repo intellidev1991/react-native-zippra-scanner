@@ -1,33 +1,66 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Button, DeviceEventEmitter, Text} from 'react-native';
-import { findCabledScanner, findBluetoothScanner, requestBluethoothAccess, setupApi, getActiveScannersList } from 'react-native-zippra-scanner';
+import {
+  StyleSheet,
+  View,
+  Button,
+  DeviceEventEmitter,
+  Text,
+} from 'react-native';
+import {
+  findCabledScanner,
+  findBluetoothScanner,
+  requestBluethoothAccess,
+  setupApi,
+  getActiveScannersList,
+  Listeners,
+} from 'react-native-zippra-scanner';
 
 export default function App() {
-  const [code, setCode] = React.useState("");
+  const [code, setCode] = React.useState('');
 
   React.useEffect(() => {
     requestBluethoothAccess().then(setupApi);
 
-    DeviceEventEmitter.addListener('SCANNER_DISAPPEARED', () => console.log('SCANNER_DIsAPPEARED'));
-    DeviceEventEmitter.addListener('SCANNER_ESTABLISHED', () => console.log('SCANNER_ESTABLISHED'));
-    DeviceEventEmitter.addListener('SESSION_TERMINATED', () => console.log('SESSION_TERMINATED'));
-    DeviceEventEmitter.addListener('BARCODE_RECEIVED', (value: string) => setCode(value));
-
-  }, [])
+    DeviceEventEmitter.addListener(Listeners.SCANNER_DISAPPEARED, () =>
+      console.log('SCANNER_DISAPPEARED')
+    );
+    DeviceEventEmitter.addListener(Listeners.SCANNER_ESTABLISHED, () =>
+      console.log('SCANNER_ESTABLISHED')
+    );
+    DeviceEventEmitter.addListener(Listeners.SESSION_TERMINATED, () =>
+      console.log('SESSION_TERMINATED')
+    );
+    DeviceEventEmitter.addListener(
+      Listeners.BARCODE_RECEIVED,
+      (value: string) => setCode(value)
+    );
+  }, []);
 
   const getDevices = () => {
     getActiveScannersList().then((devices) => {
-      console.log(JSON.stringify((devices)))
-    })
-  }
+      console.log(JSON.stringify(devices));
+    });
+  };
 
   return (
     <View style={styles.container}>
       <Text>Result: {code}</Text>
-      <Button style={styles.openButton} onPress={() =>  findBluetoothScanner("A4:C7:4B:3B:38:F5")} title={'Open bluetooth barcode'} />
-      <Button style={styles.openButton} onPress={findCabledScanner} title={'Open usb barcode'} />
-      <Button style={styles.openButton} onPress={getDevices} title={'Get Devices'} />
+      <Button
+        style={styles.openButton}
+        onPress={() => findBluetoothScanner('A4:C7:4B:3B:38:F5')}
+        title={'Open bluetooth barcode'}
+      />
+      <Button
+        style={styles.openButton}
+        onPress={findCabledScanner}
+        title={'Open usb barcode'}
+      />
+      <Button
+        style={styles.openButton}
+        onPress={getDevices}
+        title={'Get Devices'}
+      />
     </View>
   );
 }
@@ -41,6 +74,6 @@ const styles = StyleSheet.create({
   openButton: {
     width: 120,
     height: 60,
-    backgroundColor: "#000000"
+    backgroundColor: '#000000',
   },
 });
