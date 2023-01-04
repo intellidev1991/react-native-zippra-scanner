@@ -4,7 +4,7 @@
   <string name="perm_label_service_launch_permission">Service launch permission</string>
   <string name="perm_desc_activity_launch_permission">Permission to launch Scanner Control Application from other application/components</string>
   <string name="perm_label_activity_launch_permission">Activity launch permission</string>
-  <string name="cancel">Cancel</string>
-  <string name="continue_txt">Continue</string>
-  <string name="scanner_connected">Scanner connected</string>
+  <string name="cancel">الغاء</string>
+  <string name="continue_txt">متابعة</string>
+  <string name="scanner_connected">تم الاقتران</string>
 </resources>

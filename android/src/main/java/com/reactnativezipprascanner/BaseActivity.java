@@ -9,9 +9,11 @@ import static com.reactnativezipprascanner.helpers.Constants.VIRTUAL_TETHER_EVEN
 import static com.reactnativezipprascanner.helpers.Constants.VIRTUAL_TETHER_HOST_NOTIFICATION_CHANNEL_ID;
 import static com.reactnativezipprascanner.helpers.Constants.logAsMessage;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -767,6 +769,29 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
     }
   };
 
+
+  private void ShowAlert() {
+    AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+    builder1.setIcon(android.R.drawable.ic_dialog_alert);
+    String message = getString(R.string.scanner_connected);
+    String continueText = getString(R.string.continue_txt);
+
+    builder1.setMessage(message);
+    builder1.setCancelable(false);
+
+    builder1.setPositiveButton(
+      continueText,
+            new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int id) {
+                finish();
+              }
+            });
+
+    AlertDialog alert11 = builder1.create();
+    alert11.show();
+  }
+
+
 //Handler to show the data on UI
 
   protected Handler dataHandler = new Handler() {
@@ -869,10 +894,8 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
               Toast.makeText(getApplicationContext(), notification_Msg.toString(), Toast.LENGTH_SHORT).show();
             }
           }
-          
-          finish();
-          sendEvent("SCANNER_ESTABLISHED", "Connected");
 
+          ShowAlert();
           break;
         case Constants.SESSION_TERMINATED:
           int scannerID = (Integer) msg.obj;

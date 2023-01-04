@@ -1,6 +1,8 @@
 package com.reactnativezipprascanner;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -17,6 +19,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.bridge.ReactContext;
@@ -64,10 +68,7 @@ public class FindCabledScanner extends BaseActivity implements ScannerAppEngine.
       // Only one SNAPI scanner available
       if(mSNAPIList.get(0).isActive()){
         // Available scanner is active. Navigate to active scanner
-        finish();
-        sendEvent("SCANNER_ESTABLISHED", "Connected");
-        Toast.makeText(this, "Scanner Connected", Toast.LENGTH_SHORT).show();
-
+          ShowAlert();
       }else{
         // Try to connect available scanner
         cmdExecTask=new MyAsyncTask(mSNAPIList.get(0));
@@ -75,6 +76,27 @@ public class FindCabledScanner extends BaseActivity implements ScannerAppEngine.
         Toast.makeText(this, "Try to connect available scanner", Toast.LENGTH_SHORT).show();
       }
     }
+  }
+
+  private void ShowAlert() {
+      AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+      builder1.setIcon(android.R.drawable.ic_dialog_alert);
+      String message = getString(R.string.scanner_connected);
+      String continueText = getString(R.string.continue_txt);
+
+    builder1.setMessage(message);
+      builder1.setCancelable(false);
+
+      builder1.setPositiveButton(
+        continueText,
+              new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int id) {
+                      finish();
+                  }
+              });
+
+      AlertDialog alert11 = builder1.create();
+      alert11.show();
   }
 
 
@@ -97,7 +119,7 @@ public class FindCabledScanner extends BaseActivity implements ScannerAppEngine.
     protected Boolean doInBackground(Void... voids) {
       DCSSDKDefs.DCSSDK_RESULT result =connect(scanner.getScannerID());
       if(result== DCSSDKDefs.DCSSDK_RESULT.DCSSDK_RESULT_SUCCESS){
-        finish();
+          finish();
         return true;
       }
       else {
