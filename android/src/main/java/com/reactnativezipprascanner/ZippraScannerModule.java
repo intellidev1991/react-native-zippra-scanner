@@ -3,8 +3,11 @@ import android.Manifest;
 
 import android.app.Activity;
 import com.reactnativezipprascanner.application.Application;
+
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -31,6 +34,9 @@ public class ZippraScannerModule extends ReactContextBaseJavaModule {
   public static final String NAME = "ZippraScanner";
   public static ReactContext MainContext;
   private static final int ACCESS_FINE_LOCATION_REQUEST_CODE = 10;
+
+  public static String message = "";
+  public static String okText = "";
 
   public ZippraScannerModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -140,5 +146,12 @@ public class ZippraScannerModule extends ReactContextBaseJavaModule {
       abortBroadcast();
     }
   };
+
+
+  @ReactMethod
+  public void setTitles(String _message, String _ok) {
+    message = _message;
+    okText = _ok;
+  }
 
 }

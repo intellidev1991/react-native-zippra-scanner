@@ -41,6 +41,11 @@ public class FindCabledScanner extends BaseActivity implements ScannerAppEngine.
   private static ArrayList<DCSScannerInfo> mSNAPIList=new ArrayList<DCSScannerInfo>();
   static MyAsyncTask cmdExecTask=null;
   private static CustomProgressDialog progressDialog;
+    public void sendEvent(String eventName, @Nullable String params) {
+        ZippraScannerModule.MainContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -81,14 +86,12 @@ public class FindCabledScanner extends BaseActivity implements ScannerAppEngine.
   private void ShowAlert() {
       AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
       builder1.setIcon(android.R.drawable.ic_dialog_alert);
-      String message = getString(R.string.scanner_connected);
-      String continueText = getString(R.string.continue_txt);
 
-    builder1.setMessage(message);
+    builder1.setMessage(ZippraScannerModule.message);
       builder1.setCancelable(false);
 
       builder1.setPositiveButton(
-        continueText,
+              ZippraScannerModule.okText,
               new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int id) {
                       finish();
