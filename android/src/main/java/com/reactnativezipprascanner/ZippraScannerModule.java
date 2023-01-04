@@ -147,5 +147,11 @@ public class ZippraScannerModule extends ReactContextBaseJavaModule {
     }
   };
 
+   public static void sendEvent(String eventName, @Nullable String params) {
+    MainContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit(eventName, params);
+  }
+
 
 }
