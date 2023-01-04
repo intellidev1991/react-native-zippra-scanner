@@ -148,10 +148,4 @@ public class ZippraScannerModule extends ReactContextBaseJavaModule {
   };
 
 
-  @ReactMethod
-  public void setTitles(String _message, String _ok) {
-    message = _message;
-    okText = _ok;
-  }
-
 }

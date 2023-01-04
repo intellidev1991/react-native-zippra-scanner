@@ -43,7 +43,3 @@ export function setupApi(): Promise<any> {
 export function getActiveScannersList(): Promise<any> {
   return ZippraScanner.getActiveScannersList();
 }
-
-export function setTitles(message: string, ok: string) {
-  return ZippraScanner.setTitles(message, ok);
-}

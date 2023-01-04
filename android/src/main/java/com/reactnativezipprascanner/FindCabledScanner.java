@@ -41,17 +41,11 @@ public class FindCabledScanner extends BaseActivity implements ScannerAppEngine.
   private static ArrayList<DCSScannerInfo> mSNAPIList=new ArrayList<DCSScannerInfo>();
   static MyAsyncTask cmdExecTask=null;
   private static CustomProgressDialog progressDialog;
-    public void sendEvent(String eventName, @Nullable String params) {
-        ZippraScannerModule.MainContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
-    }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_cabled_scanner);
-
     mSNAPIList.clear();
     updateScannersList();
     for(DCSScannerInfo device:getActualScannersList()){
@@ -73,7 +67,8 @@ public class FindCabledScanner extends BaseActivity implements ScannerAppEngine.
       // Only one SNAPI scanner available
       if(mSNAPIList.get(0).isActive()){
         // Available scanner is active. Navigate to active scanner
-          ShowAlert();
+          ZippraScannerModule.sendEvent("SCANNER_ESTABLISHED", "");
+          finish();
       }else{
         // Try to connect available scanner
         cmdExecTask=new MyAsyncTask(mSNAPIList.get(0));
@@ -82,26 +77,6 @@ public class FindCabledScanner extends BaseActivity implements ScannerAppEngine.
       }
     }
   }
-
-  private void ShowAlert() {
-      AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-      builder1.setIcon(android.R.drawable.ic_dialog_alert);
-
-    builder1.setMessage(ZippraScannerModule.message);
-      builder1.setCancelable(false);
-
-      builder1.setPositiveButton(
-              ZippraScannerModule.okText,
-              new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface dialog, int id) {
-                      finish();
-                  }
-              });
-
-      AlertDialog alert11 = builder1.create();
-      alert11.show();
-  }
-
 
   private class MyAsyncTask extends AsyncTask<Void,DCSScannerInfo,Boolean> {
     private DCSScannerInfo  scanner;

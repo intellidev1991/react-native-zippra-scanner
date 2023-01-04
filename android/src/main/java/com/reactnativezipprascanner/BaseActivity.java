@@ -770,26 +770,6 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
   };
 
 
-  private void ShowAlert() {
-    AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-    builder1.setIcon(android.R.drawable.ic_dialog_alert);
-
-    builder1.setMessage(ZippraScannerModule.message);
-    builder1.setCancelable(false);
-
-    builder1.setPositiveButton(
-            ZippraScannerModule.okText,
-            new DialogInterface.OnClickListener() {
-              public void onClick(DialogInterface dialog, int id) {
-                finish();
-              }
-            });
-
-    AlertDialog alert11 = builder1.create();
-    alert11.show();
-  }
-
-
 //Handler to show the data on UI
 
   protected Handler dataHandler = new Handler() {
@@ -809,12 +789,12 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
 
           break;
         case Constants.SESSION_ESTABLISHED:
-          sendEvent("SCANNER_ESTABLISHED", "SCANNER_ESTABLISHED");
 
           DCSScannerInfo activeScanner = (DCSScannerInfo) msg.obj;
           notificaton_processed = false;
           result = false;
           setAutoReconnectOption(activeScanner.getScannerID(), true);
+
           /* notify connections delegates */
           if (mDevConnDelegates != null) {
             for (IScannerAppEngineDevConnectionsDelegate delegate : mDevConnDelegates) {
@@ -895,7 +875,8 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
             }
           }
 
-          ShowAlert();
+          ZippraScannerModule.sendEvent("SCANNER_ESTABLISHED", "");
+          finish();
           break;
         case Constants.SESSION_TERMINATED:
           int scannerID = (Integer) msg.obj;
