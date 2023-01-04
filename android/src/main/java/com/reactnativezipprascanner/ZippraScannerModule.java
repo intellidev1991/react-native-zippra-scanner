@@ -2,6 +2,8 @@ package com.reactnativezipprascanner;
 import android.Manifest;
 
 import android.app.Activity;
+
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.reactnativezipprascanner.application.Application;
 
 import android.app.AlertDialog;
@@ -14,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
