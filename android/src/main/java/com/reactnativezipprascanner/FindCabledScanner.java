@@ -64,8 +64,10 @@ public class FindCabledScanner extends BaseActivity implements ScannerAppEngine.
       // Only one SNAPI scanner available
       if(mSNAPIList.get(0).isActive()){
         // Available scanner is active. Navigate to active scanner
+        sendEvent("SCANNER_ESTABLISHED");
         finish();
         Toast.makeText(this, "Scanner Connected", Toast.LENGTH_SHORT).show();
+
       }else{
         // Try to connect available scanner
         cmdExecTask=new MyAsyncTask(mSNAPIList.get(0));

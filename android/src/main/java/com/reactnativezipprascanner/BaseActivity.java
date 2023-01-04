@@ -870,6 +870,7 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
             }
           }
 
+          sendEvent("SCANNER_ESTABLISHED");
           finish();
 
           break;
