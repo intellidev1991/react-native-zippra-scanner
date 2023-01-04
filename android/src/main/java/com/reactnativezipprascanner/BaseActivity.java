@@ -869,9 +869,9 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
               Toast.makeText(getApplicationContext(), notification_Msg.toString(), Toast.LENGTH_SHORT).show();
             }
           }
-
-          sendEvent("SCANNER_ESTABLISHED", "Connected");
+          
           finish();
+          sendEvent("SCANNER_ESTABLISHED", "Connected");
 
           break;
         case Constants.SESSION_TERMINATED:
