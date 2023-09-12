@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.zebra.barcode.sdk.sms.ConfigurationUpdateEvent;
 import com.zebra.scannercontrol.DCSSDKDefs;
 import com.zebra.scannercontrol.DCSScannerInfo;
 import com.zebra.scannercontrol.FirmwareUpdateEvent;
@@ -506,6 +507,11 @@ public class BaseActivity extends AppCompatActivity implements ScannerAppEngine,
   @Override
   public void dcssdkEventAuxScannerAppeared(DCSScannerInfo newTopology, DCSScannerInfo auxScanner) {
     dataHandler.obtainMessage(Constants.AUX_SCANNER_CONNECTED, auxScanner).sendToTarget();
+  }
+
+  @Override
+  public void dcssdkEventConfigurationUpdate(ConfigurationUpdateEvent configurationUpdateEvent) {
+
   }
 
 
