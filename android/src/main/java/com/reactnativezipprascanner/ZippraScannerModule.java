@@ -13,6 +13,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Debug;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -45,11 +47,23 @@ public class ZippraScannerModule extends ReactContextBaseJavaModule {
     super(reactContext);
 
     MainContext = reactContext;
+  }
 
-    if (Application.sdkHandler == null) {
-      Application.sdkHandler = new SDKHandler(reactContext, true);
+
+  @ReactMethod
+  public void init() {
+    Activity activity = getCurrentActivity();
+
+    if(activity != null) {
+      getCurrentActivity().runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          if (Application.sdkHandler == null) {
+            Application.sdkHandler = new SDKHandler(MainContext, true);
+          }
+        }
+      });
     }
-
   }
 
   @Override
