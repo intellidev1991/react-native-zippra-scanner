@@ -7,7 +7,7 @@ Zebra scanner for react native ("https://www.zebra.com/us/en/support-downloads/s
 ```sh
 npm react-native-zepra-scanner-1
 
-npm expo install react-native-zepra-scanner-1
+npx expo install react-native-zepra-scanner-1
 ```
 
 ## Usage
