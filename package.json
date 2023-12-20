@@ -1,7 +1,7 @@
 {
   "name": "react-native-zepra-scanner",
   "version": "0.0.18",
-  "description": "test",
+  "description": "react-native-zepra-scanner",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -42,14 +42,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MahmoudElmoghazy/react-native-zippra-scanner.git"
+    "url": "git+https://github.com/intellidev1991/react-native-zippra-scanner.git"
   },
-  "author": "Mahmoud El-moghazy <mahmoudahmedmoghazy@gmail.com> (https://github.com/MahmoudElmoghazy)",
+  "author": "HT",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MahmoudElmoghazy/react-native-zippra-scanner/issues"
+    "url": "https://github.com/intellidev1991/react-native-zippra-scanner/issues"
   },
-  "homepage": "https://github.com/MahmoudElmoghazy/react-native-zippra-scanner#readme",
+  "homepage": "https://github.com/intellidev1991/react-native-zippra-scanner#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
