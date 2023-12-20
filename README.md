@@ -1,76 +1,97 @@
 # react-native-zippra-scanner
+
 Zebra scanner for react native ("https://www.zebra.com/us/en/support-downloads/software/developer-tools/scanner-sdk-for-android.html")
+
 ## Installation
 
 ```sh
-npm install react-native-zippra-scanner
+npm react-native-zepra-scanner-1
 
-Download sdk folder: ("https://drive.google.com/file/d/1NUedeRy3AKSOgmNNjm9lkzEotno8AOzR/view")
-
-Extract the file then add it => {Your Project}/android/BarcodeScannerLibrary
-
-Add this to {Your Project/android/app/build.gradle}
-dependencies {
-    // all modules
-    +implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
-    +implementation project(':BarcodeScannerLibrary')
-}
-
-Add this inside settings.gradle
-include ':BarcodeScannerLibrary'
-
-
+npm expo install react-native-zepra-scanner-1
 ```
 
 ## Usage
 
 ```js
-import { 
-    requestBluethoothAccess, 
-    findCabledScanner, 
-    findBluetoothScanner, 
-    setupApi
-} from "react-native-zippra-scanner";
+import * as React from 'react';
 
-// ...
+import {
+  StyleSheet,
+  View,
+  Button,
+  DeviceEventEmitter,
+  Text,
+} from 'react-native';
+import {
+  findCabledScanner,
+  findBluetoothScanner,
+  requestBluethoothAccess,
+  setupApi,
+  getActiveScannersList,
+  Listeners,
+} from 'react-native-zippra-scanner';
 
-const App = () => {
-    useEffect(() => {
-        // .. request access to bluetooth promise then setup main config of module
-        requestBluethoothAccess(setupApi)
+export default function App() {
+  const [code, setCode] = React.useState('');
 
-        // .. add listeners 
-        DeviceEventEmitter.addListener('BARCODE_RECEIVED', (value: string) => {
-            console.log({
-                value
-            })
-        });
+  React.useEffect(() => {
+    requestBluethoothAccess().then(setupApi);
 
-        DeviceEventEmitter.addListener('SCANNER_DISAPPEARED', () => alert('SCANNER_DISAPPEARED'));
-        DeviceEventEmitter.addListener('SCANNER_ESTABLISHED', () => alert('SCANNER_ESTABLISHED'));
-        DeviceEventEmitter.addListener('SESSION_TERMINATED', () => alert('SESSION_TERMINATED'));
-    }, [])
+    DeviceEventEmitter.addListener(Listeners.SCANNER_DISAPPEARED, () =>
+      console.log('SCANNER_DISAPPEARED')
+    );
+    DeviceEventEmitter.addListener(Listeners.SCANNER_ESTABLISHED, () =>
+      console.log('SCANNER_ESTABLISHED')
+    );
+    DeviceEventEmitter.addListener(Listeners.SESSION_TERMINATED, () =>
+      console.log('SESSION_TERMINATED')
+    );
+    DeviceEventEmitter.addListener(
+      Listeners.BARCODE_RECEIVED,
+      (value: string) => setCode(value)
+    );
+  }, []);
 
-    const conncetUsbButtonPressed = () => {
-        // .. connect the device before open this page
-        findCabledScanner();
-    }
+  const getDevices = () => {
+    getActiveScannersList().then((devices) => {
+      console.log(JSON.stringify(devices));
+    });
+  };
 
-    const connectBluethoothButtonPressed = () => {
-        // .. change this with bluetooth address of you mobile
-        const bluetoothAddressOfYoutMobile = "A4:C7:4B:3B:38:F5";
-        findBluetoothScanner(bluetoothAddressOfYoutMobile);
-    }
-
-    return (
-        <View>
-            <Button title={"Connect usb device"} onPress={conncetUsbButtonPressed} />
-            <Button title={"Connect bluetooth device"} onPress={connectBluethoothButtonPressed} />
-        </View>
-    )
+  return (
+    <View style={styles.container}>
+      <Text>Result: {code}</Text>
+      <Button
+        style={styles.openButton}
+        onPress={() => findBluetoothScanner('A4:C7:4B:3B:38:F5')}
+        title={'Open bluetooth barcode'}
+      />
+      <Button
+        style={styles.openButton}
+        onPress={findCabledScanner}
+        title={'Open usb barcode'}
+      />
+      <Button
+        style={styles.openButton}
+        onPress={getDevices}
+        title={'Get Devices'}
+      />
+    </View>
+  );
 }
 
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  openButton: {
+    width: 120,
+    height: 60,
+    backgroundColor: '#000000',
+  },
+});
 ```
 
 ## Contributing
