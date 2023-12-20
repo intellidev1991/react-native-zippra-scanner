@@ -1,6 +1,6 @@
 {
-  "name": "react-native-zepra-scanner",
-  "version": "0.0.18",
+  "name": "react-native-zepra-scanner-1",
+  "version": "1.0.1",
   "description": "react-native-zepra-scanner",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
